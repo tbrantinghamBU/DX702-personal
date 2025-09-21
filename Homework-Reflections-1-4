@@ -5,17 +5,43 @@ Homework reflection 1
 
 1. In Coding Quiz 1, you are asked to find the distance of the farthest match in a set.  Is this farthest match distance too far to be a meaningful match?  How can you decide this?
 
+Response: There is no set rule for a match being "too far." The least similar pair in the dataset is captured by the farthest match distance. To judge whether this distance is meaningful, it helps to look at the overall distribution of match distances. A value that stands out as an extreme outlier, or one that reflects a difference in Z too large to be substantively reasonable, should be flagged as “too far.” Standardizing the Z variables makes interpretation clearer: if a match lies several standard deviations away, it is unlikely to be a valid comparison. In the end, deciding whether the distance is acceptable requires both statistical evidence—how unusual it is relative to other matches—and contextual reasoning about whether such a difference in Z still represents a comparable unit.
+
 2. In Coding Quiz 1, there are two approaches to matching: 
 (A) Picking the best match X = 0 corresponding to each X = 1 using Z values.
 (B) Using radius_neighbors to pick all matches X = 0 within a distance of 0.2 of each X = 1.
 
 Invent your own type of matching similar to 1 and 2 (or look one up on the internet), which has a different way to pick the matches in X = 0.  Clearly explain the approach you invented or found.
 
+Response: A third approach is caliper matching with multiple neighbors, which combines elements of nearest-neighbor and radius-based methods. Each X = 1 unit is matched only to X = 0 observations within a pre-set maximum distance, or caliper, ensuring that overly distant matches are excluded. From those within the caliper, the k closest neighbors are chosen, giving each treated unit multiple strong matches while avoiding implausible pairings.
+This method improves on the earlier two by preventing forced matches to distant observations (a risk in simple nearest-neighbor matching) and avoiding the uneven group sizes that radius matching can create. By setting both a distance threshold and a fixed number of neighbors, caliper matching balances quality with consistency, ensuring matches are both statistically sound and substantively meaningful.
+
+
+
 Homework reflection 2
 
 1. Invent an example situation that would use fixed effects.
 
+Response: Say you want to look at how advertising spending affects a company’s sales over time. Each company has certain traits that don’t really change, like brand reputation, product type, or management style. These traits can affect sales, but they’re hard to measure directly. If you ignore them, they could make your results misleading.
+A fixed effects model solves this by controlling for those unchanging company traits. Instead of comparing different companies to each other, it looks at how changes within the same company—like spending more or less on ads from one quarter to the next—are linked to changes in sales. This way, you get a clearer picture of the effect of advertising itself.
+
+
 2. Write a Python program that performs a bootstrap simulation to find the variance in the mean of the Pareto distribution when different samples are taken.  Explain what you had to do for this.  As you make the full sample size bigger (for the same distribution), what happens to the variance of the mean of the samples?  Does it stay about the same, get smaller, or get bigger?
+
+import numpy as np
+alpha = 3.0          # shape parameter of Pareto distribution
+sample_size = 100    # size of each sample
+n_bootstrap = 1000   # number of bootstrap resamples
+population = np.random.pareto(alpha, 10_000)
+bootstrap_means = []
+for _ in range(n_bootstrap):
+    resample = np.random.choice(population, size=sample_size, replace=True)
+    bootstrap_means.append(np.mean(resample))
+variance_of_mean = np.var(bootstrap_means, ddof=1)
+print("Estimated variance of the sample mean:", variance_of_mean)
+
+As you increase the sample size, the variance of the sample mean gets smaller. This follows the statistical principle that the standard error of the mean decreases as 1 / sqrt(n). In other words, larger samples produce more stable estimates of the mean, so the bootstrap distribution of the mean becomes tighter.
+
 
 Homework reflection 3
 
