@@ -47,7 +47,21 @@ Homework reflection 3
 
 1. In the event study in Coding Quiz 3, how would we go about testing for a change in the second derivative as well?
 
+Response: To test for a second derivative change you extend the regression specification to include quadratic time terms and their interactions with the event indicator.
+
+df['event'] = (df['time'] >= 50).astype(int)
+df['time_sq'] = df['time']**2
+df['time_event'] = df['time'] * df['event']
+df['time_sq_event'] = df['time_sq'] * df['event']
+
+model = smf.ols('value1 ~ time + time_sq + event + time_event + time_sq_event', data=df).fit()
+print(model.summary())
+
+
 2. Create your own scenario that illustrates differences-in-differences. Describe the story behind the data and show whether there is a nonzero treatment effect.
+
+Response: A company introduces a new training program for one division of employees (the treatment group), while another similar division does not receive the program (the control group). We measure average productivity scores before and after the program is rolled out. Both groups show some improvement over time, but the treated division improves much more than the control division. By comparing the change in productivity in the treated group to the change in the control group, we find a positive differences‑in‑differences estimate. This indicates a nonzero treatment effect, suggesting that the training program had a meaningful impact on employee performance beyond what would have occurred due to general trends.
+
 
 Homework reflection 4
 
