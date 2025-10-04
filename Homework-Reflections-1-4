@@ -67,4 +67,24 @@ Homework reflection 4
 
 1. The Coding Quiz gives two options for instrumental variables.  For the second item (dividing the range of W into multiple ranges), explain how you did it, show your code, and discuss any issues you encountered.
 
+How I approached it
+1. Divide W into bins
+- I chose quantile bins (e.g., quartiles or deciles) so that each bin has roughly the same number of observations.
+- Alternatively, you could use fixed-width bins if W has a natural scale.
+2. Within each bin
+- Compute \Delta Y = \mathbb{E}[Y|Z=1] - \mathbb{E}[Y|Z=0].
+- Compute \Delta X = \mathbb{E}[X|Z=1] - \mathbb{E}[X|Z=0].
+- Take the Wald ratio: \Delta Y / \Delta X.
+3. Average across bins
+- Take the mean of the bin-level Wald ratios.
+- This gives a stratified IV estimate that accounts for heterogeneity in W
+
+Issues I encountered
+- Empty bins: If W is discrete or skewed, some bins may have very few observations, making estimates unstable.
+- Division by zero: In some bins, \Delta X (the effect of Z on X) can be zero or near zero, which makes the Wald ratio undefined or extremely noisy. I had to add a check to skip those bins.
+- Choice of binning: Results can vary depending on whether you use quartiles, deciles, or fixed-width bins. Too few bins → you lose the benefit of stratification; too many bins → estimates get noisy.
+- Interpretation: The stratified estimator is not exactly the same as the global Wald ratio. It’s more like an average of local LATEs across subgroups defined by W
+
+
+
 2. Plot the college outcome (Y) vs. the test score (X) in a small range of test scores around 80. On the plot, compare it with the Y probability predicted by logistic regression. The ground truth Y value is 0 or 1; don't just plot 0 or 1 - that will make it unreadable.  Find some way to make it look better than that.
